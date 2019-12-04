@@ -74,6 +74,7 @@ async function parseNextFragmentNew(streamArn, fragmentNumber, contToken) {
 
 
 exports.main = async (event) => {
+    var args = event.Details.Parameters;
     console.log('Event Received ==>', JSON.stringify(event, null, 2))
     let streamARN = event.streamARN
     let startFragmentNum = event.startFragmentNum
