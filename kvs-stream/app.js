@@ -96,8 +96,11 @@ async function parseNextFragmentNew(streamArn, fragmentNumber, contToken) {
         request.removeListener("httpData",listener)
         request.on("httpData", function (chunk, response) {
             console.log("Inside request.on received chunk")
-            decoder.write(chunk)
-        });
+            console.log(chunk.toString().includes('AWS_KINESISVIDEO_CONTINUATION_TOKEND'))
+            // console.log(chunk)
+            chunk.toString().includes('AWS_KINESISVIDEO_CONTINUATION_TOKEND') ? decoder.write('finish') : decoder.write(chunk)
+            // decoder.write(chunk)
+        })
         //A request listener that initiates the HTTP connection for a request being sent
         request.send();
     });
@@ -113,13 +116,6 @@ exports.main = async (event) => {
     let startFragmentNum = event.startFragmentNum
     currentContactID = event.connectContactId
     let streamName = streamARN.substring(streamARN.indexOf("/") + 1, streamARN.lastIndexOf("/"))
-
-    /* event.Details.Parameters contains the following attibutes sent from the ContactFlow
-    p_streamArn,
-    p_streamStartTimeStamp,
-    p_streamStartFragNum
-    */
-
     var params = {
         APIName: "GET_MEDIA",
         StreamName: streamName

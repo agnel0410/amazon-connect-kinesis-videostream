@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "./scripts/deploy.sh",
-    "logs1": "sam logs -n kvsTriggerFunction --stack-name kvm-stream --tail",
-    "logs2": "sam logs -n kvsStreamFunction --stack-name kvm-stream --tail"
+    "logs1": "sam logs -n kvsTriggerFunction --stack-name kvs-stream --tail",
+    "logs2": "sam logs -n kvsStreamFunction --stack-name kvs-stream --tail"
   },
   "author": "",
   "license": "ISC",

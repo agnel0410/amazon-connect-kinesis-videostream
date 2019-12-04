@@ -12,7 +12,7 @@ Resources:
   kvsStreamFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://kvs-stream-s3-outputbucket-1dvq3j5umqz0o/e10761b314771d2480d5045ddecca680
+      CodeUri: s3://kvs-stream-s3-outputbucket-1dvq3j5umqz0o/36df90790c6f1c239a19e4659a1b42d1
       Handler: app.main
       Runtime: nodejs8.10
       Policies:
