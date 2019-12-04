@@ -4,7 +4,7 @@ export s3StackName='kvs-stream-s3'
 export mainStackName='kvs-stream'
 export region='us-east-1'
 # Create a S3 bucket
-aws cloudformation deploy --region $region --template-file ../templates/s3-bucket.yaml --stack-name $s3StackName
+aws cloudformation deploy --region $region --template-file ./templates/s3-bucket.yaml --stack-name $s3StackName
 
 # get S3 bucket name and assign it to the environment variable
 echo $'\nS3 Bucket: '; aws cloudformation describe-stacks --stack-name $s3StackName --query "Stacks[0].Outputs[?OutputKey=='S3Bucket'].OutputValue" --no-paginate --output text

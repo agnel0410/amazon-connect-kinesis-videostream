@@ -12,7 +12,7 @@ Resources:
   kvsStreamFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://kvm-stream-s3-outputbucket-34yfxcwwgqre/07abcaa3588296e2c2e33688bbeb7cd2
+      CodeUri: s3://kvs-stream-s3-outputbucket-1dvq3j5umqz0o/e10761b314771d2480d5045ddecca680
       Handler: app.main
       Runtime: nodejs8.10
       Policies:
@@ -54,7 +54,7 @@ Resources:
   kvsTriggerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://kvm-stream-s3-outputbucket-34yfxcwwgqre/5290872ea270bb432018e1b54e5a8ccc
+      CodeUri: s3://kvs-stream-s3-outputbucket-1dvq3j5umqz0o/5290872ea270bb432018e1b54e5a8ccc
       Handler: app.main
       Runtime: nodejs8.10
       Role:
