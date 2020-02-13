@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  amazon-connect-kinesis-videostream
+
+  Sample SAM Template for amazon-connect-kinesis-videostream
+Parameters:
+  ConnectVmS3Bucket:
+    Default: 'dev-voicemessages'
+    Description: This is the S3 bucket where voice messages are stored.
+    Type: String
+  ConnectVmS3BucketError:
+    Default: 'dev-voicemessages-error'
+    Description: This is the S3 bucket where voice messages are stored.
+    Type: String
+
+Globals:
+  Function:
+    Timeout: 60
+    PermissionsBoundary: arn:aws:iam::806168444182:policy/ctidev-fundn-policy-permissionboundary
+
+Resources:
+  S3BucketVM:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref ConnectVmS3Bucket
+      
+  S3BucketVMError:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref ConnectVmS3BucketError
+      
+  KvsStreamFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: kvs-stream/
+      Handler: index.main
+      Runtime: nodejs10.x
+      Policies:
+        - AmazonKinesisVideoStreamsFullAccess
+        - AWSLambdaKinesisExecutionRole
+        - AmazonS3FullAccess
+      Environment:
+        Variables:
+          Connect_VMS3BUCKET: !Ref ConnectVmS3Bucket
+          Connect_VMS3BUCKET_ERROR: !Ref ConnectVmS3BucketError
+          METRICS: true
+
+  KvsTriggerFunctionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      PermissionsBoundary: arn:aws:iam::806168444182:policy/ctidev-fundn-policy-permissionboundary
+      Policies:
+        -
+          PolicyName: kvs-streaming-trigger-policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*"
+              -
+                Effect: "Allow"
+                Action:
+                  - "lambda:InvokeFunction"
+                  - "lambda:InvokeAsync"
+                Resource:
+                  - !GetAtt KvsStreamFunction.Arn
+
+  KvsTriggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: kvs-trigger/
+      Handler: index.main
+      Runtime: nodejs10.x
+      Role: !GetAtt KvsTriggerFunctionRole.Arn
+      Environment:
+        Variables:
+          KvsStreamFunction: !Ref KvsStreamFunction
+          METRICS: true
+
+
+Outputs:
+  KvsStreamFunction:
+    Description: "kvsStreamFunction ARN"
+    Value: !GetAtt KvsStreamFunction.Arn
+  KvsStreamFunctionIamRole:
+    Description: "Implicit IAM Role created for kvsStreamFunction"
+    Value: !GetAtt KvsStreamFunctionRole.Arn
+  KvsTriggerFunction:
+    Description: "KvsTriggerFunction ARN"
+    Value: !GetAtt KvsTriggerFunction.Arn
+  KvsTriggerFunctionIamRole:
+    Description: "Implicit IAM Role created for KvsTriggerFunction"
+    Value: !GetAtt KvsTriggerFunctionRole.Arn
+  S3BucketVM:
+    Description: "S3 Bucket to store voice messages"
+    Value: !GetAtt S3BucketVM.Arn
+  S3BucketVM:
+    Description: "S3 Bucket to store voice messages with error"
+    Value: !GetAtt S3BucketVMError.Arn
+  

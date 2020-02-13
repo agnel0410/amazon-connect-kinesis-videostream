@@ -1,0 +1,13 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "sam-app"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-10ubn0cgp1969"
+s3_prefix = "sam-app"
+region = "us-east-1"
+profile = "dev"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "ConnectVmS3Bucket=dev-voicemessages ConnectVmS3BucketError=dev-voicemessages-error SFHOST=https://dreamjobcentral--pfctidev.cs9.my.salesforce.com SFCONSUMERKEY=3MVG9FS3IyroMOh678bQ5_SmqxQhQLdaVCrxr0zaLO2A9McLw1sJd.lhiKd4qSAbX.9b6qZGyHup7sbSbyhT_ SFCONSUMERSECRET=DEC866B8FAB15E054F51CA947384DFBBAA550D2BCEB3E33F6297253432C3E20E SFUSERNAME=amazonconnectapi@peopleforce.com.pfcitdev SFPASSWORD=8a9y8dxqWcnAlPqNso7MFqcuHaW2mNe5ImEsV SFPRODUCTION=False SFVERSION=v42.0"
+
